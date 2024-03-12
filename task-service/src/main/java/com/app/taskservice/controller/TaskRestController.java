@@ -6,6 +6,7 @@ import com.app.taskservice.entity.task.TaskEntity;
 import com.app.taskservice.mapper.task.TaskEntityResponseMapper;
 import com.app.taskservice.service.TaskService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class TaskRestController {
 
     @PutMapping("/{taskId}")
     public TaskResponse updateTaskStatusById(@PathVariable Long taskId,
-                                             @RequestParam String status) {
+                                             @RequestParam @NotNull String status) {
 
         TaskEntity task = taskService.updateTaskStatus(taskId, status);
         return taskEntityResponseMapper.toDto(task);

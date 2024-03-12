@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerExHandler {
 
     @ExceptionHandler(ValidationException.class)
-    public ErrorResponse handleValidationEx(ValidationException ex) {
+    public ErrorResponse handleValidationEx(MethodArgumentNotValidException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
     }
     @ExceptionHandler(EntityNotFoundException.class)
