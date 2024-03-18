@@ -17,7 +17,19 @@
 		<java.version>17</java.version>
 		<assertj.version>3.24.2</assertj.version>
 		<rest-assured-mock-mvc.version>5.3.2</rest-assured-mock-mvc.version>
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -61,6 +73,10 @@
 			<artifactId>assertj-core</artifactId>
 			<version>${assertj.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 	</dependencies>
 
