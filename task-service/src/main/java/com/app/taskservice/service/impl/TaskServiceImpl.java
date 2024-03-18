@@ -41,12 +41,16 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskEntity updateTaskStatus(Long taskId, String status) throws EntityNotFoundException {
+        if (status == null) {
+            throw new IllegalArgumentException(ErrorMessages.INVALID_TASK_STATUS.getMessage() + " : " + status);
+        }
+
         TaskEntity task = getTaskById(taskId);
 
         try {
             task.setStatus(TaskStatus.valueOf(status));
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidTaskStatusException(ErrorMessages.INVALID_TASK_STATUS.getMessage());
+        } catch (NullPointerException | IllegalArgumentException ex) {
+            throw new InvalidTaskStatusException(ErrorMessages.INVALID_TASK_STATUS.getMessage() + " : " + status);
         }
 
         return taskRepository.save(task);
