@@ -2,8 +2,6 @@ server:
   port: 0
 
 spring:
-  application:
-    name: task-service
   datasource:
     url: jdbc:postgresql://localhost:${POSTGRES_TASKS_PORT}/${POSTGRES_TASKS_DB}
     username: ${POSTGRES_TASKS_USERNAME}
