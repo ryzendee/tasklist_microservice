@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  tasks_postgres_data:
+    driver: local
+  users_postgres_data:
+    driver: local
+
+services:
+  task_postgres:
+    image: postgres:15.6
+    container_name: task_postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_TASKS_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_TASKS_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_TASKS_DB}
+    ports:
+      - "5430:5432"
+    volumes:
+      - tasks_postgres_data:/var/lib/postgresql/data
+
+  users_postgres:
+    image: postgres:15.6
+    container_name: users_postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERS_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_USERS_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_USERS_DB}
+    ports:
+      - "5429:5432"
+    volumes:
+      - users_postgres_data:/var/lib/postgresql/data
