@@ -7,7 +7,6 @@ import com.app.authservice.service.authuser.AuthUserService;
 import com.app.authservice.service.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +22,8 @@ public class AuthRestController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public TokenResponse signupUser(@Valid @RequestBody SignupRequest signupRequest) {
-        AuthUser createdUser = authUserService.createuser(signupRequest);
+    public TokenResponse signUpUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+        AuthUser createdUser = authUserService.createuser(signUpRequest);
         return getTokenResponse(createdUser);
     }
 
