@@ -9,8 +9,22 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/api/v1/users/**
+          filters:
+            - name: Authentication
 
         - id: task-service
           uri: lb://task-service
           predicates:
             - Path=/api/v1/tasks/**
+          filters:
+            - name: Authentication
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - name: Authentication
+
+urls:
+  validate: http://localhost:${server.port}/api/v1/auth/validate
