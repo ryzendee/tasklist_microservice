@@ -1,7 +1,7 @@
 package com.app.authservice.entity;
 
+import com.app.authservice.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +23,10 @@ public class AuthUser {
 
     @NotNull(message = "Password must not be null")
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "User role is required")
+    private Role role = Role.ROLE_USER;
 
     public AuthUser(String email, String password) {
         this.email = email;
