@@ -3,11 +3,8 @@ package com.app.authservice.service.authuser;
 import com.app.authservice.dto.request.LoginRequest;
 import com.app.authservice.dto.request.SignUpRequest;
 import com.app.authservice.entity.AuthUser;
-import com.app.authservice.enums.Role;
 import com.app.authservice.exception.custom.InvalidPasswordException;
 import com.app.authservice.exception.custom.SignupException;
-import com.app.authservice.mapper.MapToEntity;
-import com.app.authservice.mapper.interfaces.LoginRequestMapToAuthUser;
 import com.app.authservice.mapper.interfaces.SignUpRequestToAuthUserMapper;
 import com.app.authservice.repository.AuthUserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +25,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthUser createUser(SignUpRequest signupRequest) throws SignupException {
-        AuthUser user = signUpRequestToAuthUserMapper.toEntity(signupRequest);
+        AuthUser user = signUpRequestToAuthUserMapper.map(signupRequest);
         return saveUser(user);
     }
 

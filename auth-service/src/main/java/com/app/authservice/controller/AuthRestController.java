@@ -1,13 +1,15 @@
 package com.app.authservice.controller;
 
-import com.app.authservice.dto.request.*;
-import com.app.authservice.dto.response.*;
+import com.app.authservice.dto.request.LoginRequest;
+import com.app.authservice.dto.request.SignUpRequest;
+import com.app.authservice.dto.response.TokenResponse;
 import com.app.authservice.entity.AuthUser;
 import com.app.authservice.service.authuser.AuthUserService;
 import com.app.authservice.service.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +25,7 @@ public class AuthRestController {
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse signUpUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        AuthUser createdUser = authUserService.createuser(signUpRequest);
+        AuthUser createdUser = authUserService.createUser(signUpRequest);
         return getTokenResponse(createdUser);
     }
 
@@ -45,8 +47,15 @@ public class AuthRestController {
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    @PostMapping("/retrieveToken")
+    @PostMapping("/retrieve")
     public void retrieveRefreshToken(@RequestHeader(AUTH_HEADER) String refreshToken) {
         jwtService.retrieveRefreshToken(refreshToken);
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<Void> validateToken(@RequestHeader(AUTH_HEADER) String token) {
+        return jwtService.isTokenValid(token)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
