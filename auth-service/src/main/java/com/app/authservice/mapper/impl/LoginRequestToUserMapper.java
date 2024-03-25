@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginRequestToUserMapper implements LoginRequestMapToAuthUser {
     @Override
-    public AuthUser toEntity(LoginRequest dto) {
+    public AuthUser map(LoginRequest dto) {
         return new AuthUser(dto.email(), dto.password());
     }
 }

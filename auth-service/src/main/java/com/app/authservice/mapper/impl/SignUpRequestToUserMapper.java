@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SignUpRequestToUserMapper implements SignUpRequestToAuthUserMapper {
 
     @Override
-    public AuthUser toEntity(SignUpRequest dto) {
+    public AuthUser map(SignUpRequest dto) {
         return new AuthUser(dto.email(), dto.password());
     }
 }
