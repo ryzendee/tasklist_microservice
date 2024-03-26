@@ -41,7 +41,7 @@ public class ControllerExHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidPasswordException.class)
-    public ErrorResponse handleInvalidPasswordException(SignupException ex) {
+    public ErrorResponse handleInvalidPasswordException(InvalidPasswordException ex) {
         return new ErrorResponse(ex.getMessage(), ex);
     }
 
