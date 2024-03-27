@@ -5,8 +5,8 @@ import com.app.authservice.dto.request.SignUpRequest;
 import com.app.authservice.entity.AuthUser;
 import com.app.authservice.exception.custom.InvalidPasswordException;
 import com.app.authservice.exception.custom.SignupException;
-import com.app.authservice.mapper.interfaces.SignUpRequestToAuthUserMapper;
-import com.app.authservice.repository.AuthUserRepository;
+import com.app.authservice.factory.AuthUserFactory;
+import com.app.authservice.repository.authuser.AuthUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,10 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SignUpRequestToAuthUserMapper signUpRequestToAuthUserMapper;
 
     @Override
     public AuthUser createUser(SignUpRequest signupRequest) throws SignupException {
-        AuthUser user = signUpRequestToAuthUserMapper.map(signupRequest);
+        AuthUser user = AuthUserFactory.createUser(signupRequest, passwordEncoder);
         return saveUser(user);
     }
 
