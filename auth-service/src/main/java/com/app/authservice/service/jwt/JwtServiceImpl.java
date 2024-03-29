@@ -65,10 +65,11 @@ public class JwtServiceImpl implements JwtService {
         validateToken(refreshToken);
         Claims claims = jwtParser.parseToken(refreshToken);
         tokenRepository.saveTokenWithExpiration(claims.getId(), refreshToken, claims.getExpiration().getTime());
+        log.info("Saved token jti: {}", tokenRepository.findTokenById(claims.getId()));
     }
 
     private void validateToken(String token) {
-        if (!isTokenValid(token) || isTokenRetrieved(token)) {
+        if (isTokenValid(token) || isTokenRetrieved(token)) {
             throw new JwtException("Invalid or retrieved token!");
         }
     }
@@ -81,7 +82,7 @@ public class JwtServiceImpl implements JwtService {
 
         try {
             Claims claims = jwtParser.parseToken(token);
-            return claims.getExpiration().after(new Date());
+            return claims.getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException ex) {
             log.error("Failed to parse token: {}", ex.getMessage());
             return false;
