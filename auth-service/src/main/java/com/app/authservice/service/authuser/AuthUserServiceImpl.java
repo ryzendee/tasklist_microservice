@@ -10,6 +10,8 @@ import com.app.authservice.repository.authuser.AuthUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @CachePut(value = "auth_users", key = "#signupRequest.email")
     @Override
     public AuthUser createUser(SignUpRequest signupRequest) throws SignupException {
         AuthUser user = AuthUserFactory.createUser(signupRequest, passwordEncoder);
@@ -36,11 +39,14 @@ public class AuthUserServiceImpl implements AuthUserService {
             throw new SignupException(ex.getMessage());
         }
     }
+
+    @Cacheable(value = "auth_users", key = "#loginRequest.email")
     @Override
     public AuthUser loginUser(LoginRequest loginRequest) throws EntityNotFoundException {
         AuthUser user = getAuthUserByEmail(loginRequest.email());
 
-        if (passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+            log.error("Failed to login user: {}", loginRequest.email());
             throw new InvalidPasswordException("Incorrect password!");
         }
 
