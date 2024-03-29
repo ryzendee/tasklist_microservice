@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ControllerExHandler {
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleValidationEx(MethodArgumentNotValidException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
     }
@@ -29,6 +29,7 @@ public class ControllerExHandler {
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception ex) {
         log.error("Unexpected exception: {}", ex.getMessage());
+        ex.printStackTrace();
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
 }

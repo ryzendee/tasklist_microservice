@@ -50,6 +50,7 @@ public class ControllerExHandler {
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception ex) {
         log.error("Unexpected exception: {}", ex.getMessage());
+        ex.printStackTrace(); //добавил
         return new ErrorResponse(ex);
     }
 }
