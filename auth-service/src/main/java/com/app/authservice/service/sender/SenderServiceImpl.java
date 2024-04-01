@@ -1,6 +1,6 @@
 package com.app.authservice.service.sender;
 
-import com.app.authservice.exception.MailMessageException;
+import com.app.authservice.exception.custom.MessageSendingException;
 import com.app.authservice.factory.MailMessageFactory;
 import com.app.authservice.models.MailMessage;
 import com.app.authservice.utils.sender.mail.MailQueueSender;
@@ -19,7 +19,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public void sendWelcomeMailMessage(String reciever) {
         if (StringUtils.isBlank(reciever)) {
-            throw new MailMessageException("Reciever must not be null or blank: " + reciever);
+            throw new MessageSendingException("Reciever must not be null or blank: " + reciever);
         }
 
         log.info("Sending mail to reciever: {}", reciever);
