@@ -22,10 +22,10 @@ public class SenderServiceImpl implements SenderService {
     public void sendWelcomeMailMessage(String recieverEmail) {
         if (StringUtils.isBlank(recieverEmail)) {
             log.error("Email blank or empty: {}", recieverEmail);
-            throw new MessageSendingException("Reciever must not be null or blank: " + recieverEmail);
+            throw new MessageSendingException("Email must not be null or blank: " + recieverEmail);
         }
 
-        if (emailValidator.isValid(recieverEmail)) {
+        if (!emailValidator.isValid(recieverEmail)) {
             log.error("Invalid email format: {}", recieverEmail);
             throw new MessageSendingException("Invalid email format");
         }
