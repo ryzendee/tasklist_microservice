@@ -6,8 +6,10 @@ import com.app.authservice.dto.response.TokenResponse;
 import com.app.authservice.entity.AuthUser;
 import com.app.authservice.service.authuser.AuthUserService;
 import com.app.authservice.service.jwt.JwtService;
+import com.app.authservice.service.sender.SenderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +19,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthRestController {
 
-    private static final String AUTH_HEADER = "Authorization";
+    private static final String AUTH_HEADER = HttpHeaders.AUTHORIZATION;
 
     private final AuthUserService authUserService;
+    private final SenderService senderService;
     private final JwtService jwtService;
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse signUpUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         AuthUser createdUser = authUserService.createUser(signUpRequest);
+        senderService.sendWelcomeMailMessage(createdUser.getEmail());
         return getTokenResponse(createdUser);
     }
 
