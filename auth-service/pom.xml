@@ -20,6 +20,7 @@
 		<spring-dotenv.version>4.0.0</spring-dotenv.version>
 		<assertj.version>3.24.2</assertj.version>
 		<rest-assured-mock-mvc.version>5.3.2</rest-assured-mock-mvc.version>
+		<commons-validator.version>1.8.0</commons-validator.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -119,26 +120,37 @@
 			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>rabbitmq</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>${commons-validator.version}</version>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
