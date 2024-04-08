@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,17 +35,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private String generateToken(AuthUser authUser, TokenType tokenType) {
-        validateUser(authUser);
-        Claims claims = jwtClaimsCreator.getTokenClaims(authUser, tokenType);
-        return jwtFactory.createToken(claims);
-    }
-
-
-    private void validateUser(AuthUser authUser) {
         if (authUser.getId() == null || authUser.getRole() == null) {
             log.error("Invalid user credentials: id={}, role={}", authUser.getId(), authUser.getRole());
             throw new GenerateTokenException("Invalid user credentials");
         }
+
+        Claims claims = jwtClaimsCreator.getTokenClaims(authUser, tokenType);
+        return jwtFactory.createToken(claims);
     }
 
     @Override
@@ -60,33 +54,23 @@ public class JwtServiceImpl implements JwtService {
         return jwtFactory.createToken(updatedClaims);
     }
 
-    @Override
-    public void retrieveRefreshToken(String refreshToken) {
-        validateToken(refreshToken);
-        Claims claims = jwtParser.parseToken(refreshToken);
-        tokenRepository.saveTokenWithExpiration(claims.getId(), refreshToken, claims.getExpiration().getTime());
-        log.info("Saved token jti: {}", tokenRepository.findTokenById(claims.getId()));
-    }
-
     private void validateToken(String token) {
-        if (isTokenValid(token) || isTokenRetrieved(token)) {
+        if (!isTokenValid(token)) {
             throw new JwtException("Invalid or retrieved token!");
         }
     }
 
     @Override
-    public boolean isTokenValid(String token) {
-        if (isTokenRetrieved(token)) {
-            return false;
-        }
+    public void retrieveRefreshToken(String refreshToken) {
+        validateToken(refreshToken);
+        Claims claims = jwtParser.parseToken(refreshToken);
+        tokenRepository.saveTokenWithExpiration(claims.getId(), refreshToken, claims.getExpiration().getTime());
+        log.info("Token was retrieved");
+    }
 
-        try {
-            Claims claims = jwtParser.parseToken(token);
-            return claims.getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException ex) {
-            log.error("Failed to parse token: {}", ex.getMessage());
-            return false;
-        }
+    @Override
+    public boolean isTokenValid(String token) {
+        return  token != null && jwtParser.isTokenValid(token) && !isTokenRetrieved(token);
     }
 
     private boolean isTokenRetrieved(String token) {
@@ -94,4 +78,5 @@ public class JwtServiceImpl implements JwtService {
         return tokenRepository.findTokenById(claims.getId())
                 .isPresent();
     }
+
 }
