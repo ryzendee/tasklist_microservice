@@ -4,4 +4,5 @@ import io.jsonwebtoken.Claims;
 
 public interface JwtParser {
     Claims parseToken(String token);
+    boolean isTokenValid(String token);
 }
