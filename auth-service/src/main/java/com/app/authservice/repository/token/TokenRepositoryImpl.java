@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class TokenRepositoryImpl implements TokenRepository {
 
+    private static final TimeUnit EXPIRATION_TIME_UNIT = TimeUnit.MILLISECONDS;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
@@ -22,7 +23,7 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public String saveTokenWithExpiration(String jti, String token, long expirationTime) {
-        redisTemplate.opsForValue().set(jti, token, expirationTime, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(jti, token, expirationTime, EXPIRATION_TIME_UNIT);
         return jti;
     }
 }
