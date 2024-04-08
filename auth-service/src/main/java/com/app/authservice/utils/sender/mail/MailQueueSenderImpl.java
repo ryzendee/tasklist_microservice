@@ -1,8 +1,8 @@
 package com.app.authservice.utils.sender.mail;
 
 import com.app.authservice.models.mail.UserEmailDetails;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class MailQueueSenderImpl implements MailQueueSender {
     }
 
     @Override
-    public void sendMailToQueue(UserEmailDetails userEmailDetails) {
+    public void sendMailToQueue(UserEmailDetails userEmailDetails) throws AmqpException {
         rabbitTemplate.convertAndSend(exchange, routingKey, userEmailDetails);
     }
 }
