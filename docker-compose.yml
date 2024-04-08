@@ -7,6 +7,8 @@ volumes:
     driver: local
   jwt_redis_data:
     driver: local
+  notification_rabbitmq_data:
+    driver: local
 
 services:
   task_postgres:
@@ -42,3 +44,15 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - jwt_redis_data:/var/lib/redis/data/jwt
+
+  rabbit_mq:
+    image: rabbitmq:3.13.0-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    volumes:
+      - notification_rabbitmq_data:/var/liv/rabbit/data/notification
