@@ -1,7 +1,7 @@
 package com.app.authservice.service.sender;
 
-import com.app.authservice.models.MailMessage;
+import com.app.authservice.entity.AuthUser;
 
 public interface SenderService {
-    void sendWelcomeMailMessage(String recieverEmail);
+    void sendWelcomeMailMessage(AuthUser authUser);
 }
