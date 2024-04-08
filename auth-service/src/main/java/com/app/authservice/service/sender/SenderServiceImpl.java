@@ -1,8 +1,9 @@
 package com.app.authservice.service.sender;
 
+import com.app.authservice.entity.AuthUser;
 import com.app.authservice.exception.custom.MessageSendingException;
-import com.app.authservice.factory.MailMessageFactory;
-import com.app.authservice.models.MailMessage;
+import com.app.authservice.mapper.AuthUserToUserEmailDetailsMap;
+import com.app.authservice.models.mail.UserEmailDetails;
 import com.app.authservice.utils.sender.mail.MailQueueSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,21 +18,17 @@ public class SenderServiceImpl implements SenderService {
 
     private final EmailValidator emailValidator;
     private final MailQueueSender mailQueueSender;
+    private final AuthUserToUserEmailDetailsMap authUserToUserEmailDetailsMap;
 
     @Override
-    public void sendWelcomeMailMessage(String recieverEmail) {
-        if (StringUtils.isBlank(recieverEmail)) {
-            log.error("Email blank or empty: {}", recieverEmail);
-            throw new MessageSendingException("Email must not be null or blank: " + recieverEmail);
+    public void sendWelcomeMailMessage(AuthUser authUser) {
+        if (!emailValidator.isValid(authUser.getEmail())) {
+            throw new MessageSendingException("Invalid user email: " + authUser.getEmail());
         }
 
-        if (!emailValidator.isValid(recieverEmail)) {
-            log.error("Invalid email format: {}", recieverEmail);
-            throw new MessageSendingException("Invalid email format");
-        }
+        UserEmailDetails userEmailDetails = authUserToUserEmailDetailsMap.map(authUser);
+        mailQueueSender.sendMailToQueue(userEmailDetails);
 
-        log.info("Sending mail to reciever: {}", recieverEmail);
-        MailMessage mailMessage = MailMessageFactory.createWelcomeMailMessage(recieverEmail);
-        mailQueueSender.sendMailToQueue(mailMessage);
+        log.info("Sent details for welcome mail message to the queue: {}", userEmailDetails);
     }
 }
