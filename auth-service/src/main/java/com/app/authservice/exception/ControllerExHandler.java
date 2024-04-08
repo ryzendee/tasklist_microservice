@@ -1,7 +1,7 @@
 package com.app.authservice.exception;
 
 import com.app.authservice.exception.custom.GenerateTokenException;
-import com.app.authservice.exception.custom.InvalidPasswordException;
+import com.app.authservice.exception.custom.InvalidCredentialsException;
 import com.app.authservice.exception.custom.SignupException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +40,8 @@ public class ControllerExHandler {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ErrorResponse handleInvalidPasswordException(InvalidPasswordException ex) {
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ErrorResponse handleInvalidPasswordException(InvalidCredentialsException ex) {
         return new ErrorResponse(ex.getMessage(), ex);
     }
 
