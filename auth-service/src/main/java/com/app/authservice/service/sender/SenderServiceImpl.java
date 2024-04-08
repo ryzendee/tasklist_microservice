@@ -7,9 +7,9 @@ import com.app.authservice.models.mail.UserEmailDetails;
 import com.app.authservice.utils.sender.mail.MailQueueSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.amqp.AmqpException;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,13 @@ public class SenderServiceImpl implements SenderService {
         }
 
         UserEmailDetails userEmailDetails = authUserToUserEmailDetailsMap.map(authUser);
-        mailQueueSender.sendMailToQueue(userEmailDetails);
+
+        try {
+            mailQueueSender.sendMailToQueue(userEmailDetails);
+        } catch (AmqpException ex) {
+            log.error("Failed to send welcome message: {}", userEmailDetails.recipientEmail(), ex);
+            return;
+        }
 
         log.info("Sent details for welcome mail message to the queue: {}", userEmailDetails);
     }
