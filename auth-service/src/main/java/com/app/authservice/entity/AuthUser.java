@@ -28,7 +28,7 @@ public class AuthUser implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "User role is required")
-    private Role role = Role.ROLE_USER;
+    private Role role;
 
     public AuthUser(String email, String password) {
         this.email = email;
