@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class FreemarkerTemplateTemplateProcessorImpl implements FreemarkerTemplateProcessor {
+public class FreemarkerTemplateProcessorImpl implements FreemarkerTemplateProcessor {
 
     private final Configuration freemarkerConfiguration;
     private final StringWriter stringWriter = new StringWriter();
