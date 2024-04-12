@@ -1,13 +1,13 @@
 package com.app.taskservice.facade;
 
 import com.app.taskservice.dto.request.CreateTaskRequest;
+import com.app.taskservice.dto.request.UpdateTaskRequest;
 import com.app.taskservice.dto.response.TaskResponse;
 import com.app.taskservice.entity.task.TaskEntity;
 import com.app.taskservice.mapper.TaskEntityResponseMapper;
 import com.app.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +22,14 @@ public class TaskFacadeImpl implements TaskFacade {
     }
 
     @Override
-    public TaskResponse updateTaskStatus(Long taskId, String status) {
-        TaskEntity task = taskService.updateTaskStatus(taskId, status);
+    public TaskResponse updateTaskStatusById(Long taskId, String status) {
+        TaskEntity task = taskService.updateTaskStatusById(taskId, status);
+        return taskEntityResponseMapper.toDto(task);
+    }
+
+    @Override
+    public TaskResponse updateTaskById(Long taskId, UpdateTaskRequest updateTaskRequest) {
+        TaskEntity task = taskService.updateTaskById(taskId, updateTaskRequest);
         return taskEntityResponseMapper.toDto(task);
     }
 

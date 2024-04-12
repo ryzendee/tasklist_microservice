@@ -1,6 +1,7 @@
 package com.app.taskservice.service.impl;
 
 import com.app.taskservice.dto.request.CreateTaskRequest;
+import com.app.taskservice.dto.request.UpdateTaskRequest;
 import com.app.taskservice.entity.task.TaskEntity;
 import com.app.taskservice.entity.task.TaskStatus;
 import com.app.taskservice.exception.ErrorMessages;
@@ -42,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskEntity updateTaskStatus(Long taskId, String status) throws EntityNotFoundException {
+    public TaskEntity updateTaskStatusById(Long taskId, String status) throws EntityNotFoundException {
         if (StringUtils.isBlank(status)) {
             throw new IllegalArgumentException(ErrorMessages.INVALID_TASK_STATUS.getMessage() + " : " + status);
         }
@@ -57,6 +58,20 @@ public class TaskServiceImpl implements TaskService {
 
         return taskRepository.save(task);
     }
+
+    @Transactional
+    @Override
+    public TaskEntity updateTaskById(Long id, UpdateTaskRequest updateTaskRequest) {
+        TaskEntity taskEntity = getTaskById(id);
+
+        taskEntity.setTitle(updateTaskRequest.title());
+        taskEntity.setStatus(TaskStatus.valueOf(updateTaskRequest.status()));
+        taskEntity.setDescription(updateTaskRequest.description());
+
+        return taskRepository.save(taskEntity);
+    }
+
+
     @Transactional
     @Override
     public boolean deleteTask(Long taskId) throws EntityNotFoundException {

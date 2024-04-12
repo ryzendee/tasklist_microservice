@@ -1,5 +1,6 @@
 package com.app.taskservice.controller;
 
+import com.app.taskservice.dto.request.UpdateTaskRequest;
 import com.app.taskservice.facade.TaskFacade;
 import com.app.taskservice.dto.request.CreateTaskRequest;
 import com.app.taskservice.dto.response.TaskResponse;
@@ -28,7 +29,13 @@ public class TaskRestController {
     public TaskResponse updateTaskStatusById(@PathVariable @Min(value = 0) Long taskId,
                                              @RequestParam @NotBlank String status) {
 
-        return taskFacade.updateTaskStatus(taskId, status);
+        return taskFacade.updateTaskStatusById(taskId, status);
+    }
+
+    @PutMapping("/{taskId}")
+    public TaskResponse updateTaskById(@PathVariable @Min(value = 0) Long taskId,
+                                       @RequestBody UpdateTaskRequest updateTaskRequest) {
+        return taskFacade.updateTaskById(taskId, updateTaskRequest);
     }
 
     @DeleteMapping("/{taskId}")
