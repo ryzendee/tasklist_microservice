@@ -1,6 +1,6 @@
 package com.app.authservice.utils.sender.mail;
 
-import com.app.authservice.models.mail.UserEmailDetails;
+import com.app.rabbit.mail.UserEmailDetails;
 
 public interface MailQueueSender {
 
