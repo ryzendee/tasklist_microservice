@@ -49,8 +49,7 @@ public class ControllerExHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception ex) {
-        log.error("Unexpected exception: {}", ex.getMessage());
-        ex.printStackTrace(); //добавил
+        log.error("Unexpected exception", ex);
         return new ErrorResponse(ex);
     }
 }
