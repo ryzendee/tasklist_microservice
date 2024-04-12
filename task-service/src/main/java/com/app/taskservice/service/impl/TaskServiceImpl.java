@@ -11,6 +11,7 @@ import com.app.taskservice.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskEntity updateTaskStatus(Long taskId, String status) throws EntityNotFoundException {
-        if (status == null) {
+        if (StringUtils.isBlank(status)) {
             throw new IllegalArgumentException(ErrorMessages.INVALID_TASK_STATUS.getMessage() + " : " + status);
         }
 
@@ -67,6 +68,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = true)
     @Override
     public Page<TaskEntity> getTasksPageByUserId(Long userId, int page, int pageSize) {
-        return null;
+        return taskRepository.findAllByUserId(userId, page, pageSize);
     }
 }
