@@ -2,7 +2,7 @@ package com.app.authservice.mapper.impl;
 
 import com.app.authservice.entity.AuthUser;
 import com.app.authservice.mapper.AuthUserToUserEmailDetailsMap;
-import com.app.authservice.models.mail.UserEmailDetails;
+import com.app.rabbit.mail.UserEmailDetails;
 import org.springframework.stereotype.Component;
 
 @Component
