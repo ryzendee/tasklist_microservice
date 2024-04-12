@@ -6,10 +6,10 @@ import com.app.taskservice.entity.task.TaskEntity;
 import com.app.taskservice.entity.task.TaskStatus;
 import com.app.taskservice.exception.ErrorMessages;
 import com.app.taskservice.exception.custom.InvalidTaskStatusException;
+import com.app.taskservice.exception.custom.TaskNotFoundException;
 import com.app.taskservice.mapper.CreateRequestTaskMapper;
 import com.app.taskservice.repository.TaskRepository;
 import com.app.taskservice.service.TaskService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -36,14 +36,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public TaskEntity getTaskById(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.ENTITY_NOT_FOUND.getMessage()));
+    public Page<TaskEntity> getTasksPageByUserId(Long userId, int page, int pageSize) {
+        return taskRepository.findAllByUserId(userId, page, pageSize);
     }
 
     @Transactional
     @Override
-    public TaskEntity updateTaskStatusById(Long taskId, String status) throws EntityNotFoundException {
+    public TaskEntity updateTaskStatusById(Long taskId, String status) throws TaskNotFoundException {
         if (StringUtils.isBlank(status)) {
             throw new IllegalArgumentException(ErrorMessages.INVALID_TASK_STATUS.getMessage() + " : " + status);
         }
@@ -61,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskEntity updateTaskById(Long id, UpdateTaskRequest updateTaskRequest) {
+    public TaskEntity updateTaskById(Long id, UpdateTaskRequest updateTaskRequest) throws TaskNotFoundException {
         TaskEntity taskEntity = getTaskById(id);
 
         taskEntity.setTitle(updateTaskRequest.title());
@@ -71,10 +70,9 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.save(taskEntity);
     }
 
-
     @Transactional
     @Override
-    public boolean deleteTask(Long taskId) throws EntityNotFoundException {
+    public boolean deleteTask(Long taskId) throws TaskNotFoundException {
         TaskEntity task = getTaskById(taskId);
         taskRepository.delete(task);
         return true;
@@ -82,7 +80,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<TaskEntity> getTasksPageByUserId(Long userId, int page, int pageSize) {
-        return taskRepository.findAllByUserId(userId, page, pageSize);
+    public TaskEntity getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(ErrorMessages.ENTITY_NOT_FOUND.getMessage()));
     }
+
 }
