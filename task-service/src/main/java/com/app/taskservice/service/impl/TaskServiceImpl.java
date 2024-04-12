@@ -5,12 +5,13 @@ import com.app.taskservice.entity.task.TaskEntity;
 import com.app.taskservice.entity.task.TaskStatus;
 import com.app.taskservice.exception.ErrorMessages;
 import com.app.taskservice.exception.custom.InvalidTaskStatusException;
-import com.app.taskservice.mapper.task.CreateRequestTaskMapper;
+import com.app.taskservice.mapper.CreateRequestTaskMapper;
 import com.app.taskservice.repository.TaskRepository;
 import com.app.taskservice.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskEntity createTask(CreateTaskRequest taskRequest) {
-        TaskEntity taskEntity = taskMapper.toEntity(taskRequest);
+        TaskEntity taskEntity = taskMapper.map(taskRequest);
         taskEntity.setStatus(TaskStatus.TO_DO);
         return taskRepository.save(taskEntity);
     }
@@ -61,5 +62,11 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity task = getTaskById(taskId);
         taskRepository.delete(task);
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TaskEntity> getTasksPageByUserId(Long userId, int page, int pageSize) {
+        return null;
     }
 }

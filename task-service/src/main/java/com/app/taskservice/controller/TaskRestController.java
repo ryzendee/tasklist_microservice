@@ -3,7 +3,7 @@ package com.app.taskservice.controller;
 import com.app.taskservice.dto.request.CreateTaskRequest;
 import com.app.taskservice.dto.response.TaskResponse;
 import com.app.taskservice.entity.task.TaskEntity;
-import com.app.taskservice.mapper.task.TaskEntityResponseMapper;
+import com.app.taskservice.mapper.TaskEntityResponseMapper;
 import com.app.taskservice.service.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
