@@ -2,10 +2,12 @@ package com.app.authservice.controller;
 
 import com.app.authservice.dto.request.LoginRequest;
 import com.app.authservice.dto.request.SignUpRequest;
+import com.app.authservice.dto.response.AuthUserResponse;
 import com.app.authservice.dto.response.TokenResponse;
 import com.app.authservice.facade.AuthFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,11 @@ public class AuthRestController {
 
     private final AuthFacade authFacade;
 
+    @GetMapping
+    public Page<AuthUserResponse> getUsersPage(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int pageSize) {
+        return authFacade.getUsersPage(page, pageSize);
+    }
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse signUpUser(@Valid @RequestBody SignUpRequest signUpRequest) {
@@ -37,10 +44,8 @@ public class AuthRestController {
     }
 
     @PostMapping("/retrieve")
-    public ResponseEntity<Void> retrieveRefreshToken(@RequestHeader(AUTH_HEADER) String refreshToken) {
-        return authFacade.retrieveRefreshToken(refreshToken)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.badRequest().build();
+    public void retrieveRefreshToken(@RequestHeader(AUTH_HEADER) String refreshToken) {
+        authFacade.retrieveRefreshToken(refreshToken);
     }
 
     @PostMapping("/validate")
