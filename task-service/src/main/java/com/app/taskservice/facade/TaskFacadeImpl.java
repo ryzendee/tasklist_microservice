@@ -8,7 +8,11 @@ import com.app.taskservice.exception.custom.TaskNotFoundException;
 import com.app.taskservice.mapper.TaskEntityResponseMapper;
 import com.app.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +24,15 @@ public class TaskFacadeImpl implements TaskFacade {
     public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
         TaskEntity task =  taskService.createTask(createTaskRequest);
         return taskEntityResponseMapper.toDto(task);
+    }
+
+    @Override
+    public Page<TaskResponse> getTasksPageByUserId(Long userId, int page, int pageSize) {
+        List<TaskResponse> taskEntityList =  taskService.getTasksPageByUserId(userId, page, pageSize).stream()
+                .map(taskEntityResponseMapper::toDto)
+                .toList();
+
+        return new PageImpl<>(taskEntityList);
     }
 
     @Override

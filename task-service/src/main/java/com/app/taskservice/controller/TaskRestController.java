@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TaskRestController {
 
+    private static final String DEFAULT_PAGE = "0";
+    private static final String DEFAULT_PAGE_SIZE = "30";
     private final TaskFacade taskFacade;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
         return taskFacade.createTask(createTaskRequest);
+    }
+
+    @GetMapping("/{userId}")
+    public Page<TaskResponse> getTasksPageByUserId(@PathVariable @Min(value = 0) Long userId,
+                                                   @RequestParam(name = "page", defaultValue = DEFAULT_PAGE) int page,
+                                                   @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+        return taskFacade.getTasksPageByUserId(userId, page, pageSize);
     }
 
     @PatchMapping("/{taskId}")
