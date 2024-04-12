@@ -5,11 +5,23 @@ spring:
     password: ${RABBITMQ_PASS}
     port: ${RABBITMQ_PORT}
 
+#Use for sending notifications by email
 email-exchange:
   name: email-exchange
   queues:
-    - name: auth_user_email_queue
+    registration:
+      name: user_registration_email_queue
       routing: auth_user_routing
 
-    - name: task_report_email_queue
+    task-report:
+      name: task_report_email_queue
       routing: task_report_routing
+
+#Use for getting user data from auth-service
+user-data-exchange:
+  name: user-data-exchange
+  queues:
+    tasks:
+      name: user_data_tasks_queue
+      routing: user_data_tasks_routing
+
