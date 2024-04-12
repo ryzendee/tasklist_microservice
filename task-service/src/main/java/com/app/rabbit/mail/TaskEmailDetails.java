@@ -1,4 +1,4 @@
-package com.app.mail;
+package com.app.rabbit.mail;
 
 public record TaskEmailDetails(
         String email,

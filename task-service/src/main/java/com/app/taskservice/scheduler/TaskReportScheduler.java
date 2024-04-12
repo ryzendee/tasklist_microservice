@@ -1,6 +1,6 @@
 package com.app.taskservice.scheduler;
 
-import com.app.mail.TaskEmailDetails;
+import com.app.rabbit.mail.TaskEmailDetails;
 import com.app.taskservice.dto.response.UserResponse;
 import com.app.taskservice.service.AuthUserService;
 import com.app.taskservice.utils.generator.TaskReportGenerator;
