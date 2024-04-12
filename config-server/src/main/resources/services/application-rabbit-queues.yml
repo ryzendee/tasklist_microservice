@@ -17,11 +17,3 @@ email-exchange:
       name: task_report_email_queue
       routing: task_report_routing
 
-#Use for getting user data from auth-service
-user-data-exchange:
-  name: user-data-exchange
-  queues:
-    tasks:
-      name: user_data_tasks_queue
-      routing: user_data_tasks_routing
-
