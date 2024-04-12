@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,11 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final AuthUserFactory authUserFactory;
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Page<AuthUser> getUsersPage(int page, int pageSize) {
+        return authUserRepository.findAll(PageRequest.of(page, pageSize));
+    }
 
     @Cacheable(value = "auth_users", key = "#signupRequest.email")
     @Override
