@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -22,16 +21,16 @@ public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFac
 
     private static final String AUTH_HEADER = HttpHeaders.AUTHORIZATION;
     private final RouteValidator routerValidator;
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
 
     @Value("${urls.validate}")
     private String validateUrl;
 
     @Autowired
-    public AuthenticationGatewayFilterFactory(RouteValidator routerValidator, WebClient webClient) {
+    public AuthenticationGatewayFilterFactory(RouteValidator routerValidator, RestTemplate restTemplate) {
         super(Config.class);
         this.routerValidator = routerValidator;
-        this.webClient = webClient;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -44,15 +43,17 @@ public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFac
                     return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
 
-                return sendValidationRequest(exchange)
-                        .flatMap(response -> {
-                            if (response.statusCode().is2xxSuccessful()) {
-                                return chain.filter(exchange).then(Mono.empty());
-                            } else {
-                                return onError(exchange, HttpStatus.UNAUTHORIZED);
-                            }
-                        })
-                        .onErrorResume(error -> onError(exchange, HttpStatus.INTERNAL_SERVER_ERROR));
+                try {
+                    ResponseEntity<Void> response = sendValidationRequest(exchange);
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        return chain.filter(exchange);
+                    } else {
+                        return onError(exchange, HttpStatus.UNAUTHORIZED);
+                    }
+                } catch (RestClientException ex) {
+                    return onError(exchange, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
             }
 
             return chain.filter(exchange);
@@ -69,15 +70,17 @@ public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFac
         return !request.getHeaders().containsKey(AUTH_HEADER);
     }
 
-    private Mono<ClientResponse> sendValidationRequest(ServerWebExchange exchange) {
+    private ResponseEntity<Void> sendValidationRequest(ServerWebExchange exchange) {
         log.info("Sending validation request to auth-service: {}", validateUrl);
 
         String jwt = exchange.getRequest().getHeaders().getFirst(AUTH_HEADER);
-        return webClient.post()
-                .uri(validateUrl)
-                .header(AUTH_HEADER, jwt)
-                .retrieve()
-                .bodyToMono(ClientResponse.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(AUTH_HEADER, jwt);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(validateUrl, HttpMethod.POST, requestEntity, Void.class);
+
     }
 
     public static class Config {
