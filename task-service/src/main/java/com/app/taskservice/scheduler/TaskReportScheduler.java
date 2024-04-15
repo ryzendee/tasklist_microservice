@@ -5,6 +5,7 @@ import com.app.taskservice.dto.response.AuthUserResponse;
 import com.app.taskservice.service.AuthUserService;
 import com.app.taskservice.utils.generator.TaskReportGenerator;
 import com.app.taskservice.utils.sender.MailQueueSender;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class TaskReportScheduler {
                     mailQueueSender.send(taskReport);
                 }
 
-            } catch (HttpClientErrorException ex) {
+            } catch (FeignException ex) {
                 log.error("Failed to execute task report scheduler, attempts: {}", operationCounter, ex);
                 continueExecuting = operationCounter < MAX_OPERATION_ATTEMPTS;
                 operationCounter++;
