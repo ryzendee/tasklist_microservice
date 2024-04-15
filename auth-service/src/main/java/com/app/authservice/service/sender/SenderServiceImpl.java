@@ -3,7 +3,7 @@ package com.app.authservice.service.sender;
 import com.app.authservice.entity.AuthUser;
 import com.app.authservice.exception.custom.MessageSendingException;
 import com.app.authservice.mapper.AuthUserToUserEmailDetailsMap;
-import com.app.authservice.models.mail.UserEmailDetails;
+import com.app.rabbit.mail.UserEmailDetails;
 import com.app.authservice.utils.sender.mail.MailQueueSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class SenderServiceImpl implements SenderService {
         try {
             mailQueueSender.sendMailToQueue(userEmailDetails);
         } catch (AmqpException ex) {
-            log.error("Failed to send welcome message: {}", userEmailDetails.recipientEmail(), ex);
+            log.error("Failed to send welcome message: {}", userEmailDetails.email(), ex);
             return;
         }
 
