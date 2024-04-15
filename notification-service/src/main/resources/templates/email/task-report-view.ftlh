@@ -46,7 +46,7 @@
         <p>Here's a simple report on your tasks:</p>
         <p>Total tasks: ${totalTasks}</p>
         <p>Completed: ${completedTasks}</p>
-        <p>To-do: ${toDoTasks}</p>
+        <p>To-do: ${tasksInProcess}</p>
         <p>If you need more detailed information, please open the Task List application</p>
         <p>With best regards, <br> Task List Team</p>
         <a id="a" href="https://github.com/IlyaLisov/tasklist">Github</a>
