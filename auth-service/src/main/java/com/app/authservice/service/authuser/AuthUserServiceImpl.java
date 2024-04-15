@@ -32,7 +32,6 @@ public class AuthUserServiceImpl implements AuthUserService {
         return authUserRepository.findAll(PageRequest.of(page, pageSize));
     }
 
-    @Cacheable(value = "auth_users", key = "#signupRequest.email")
     @Override
     public AuthUser createUser(SignUpRequest signupRequest) throws SignupException {
         AuthUser user = authUserFactory.createUserFromRequest(signupRequest, passwordEncoder);
