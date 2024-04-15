@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 @EnableScheduling
@@ -50,9 +49,14 @@ public class TaskReportScheduler {
 
                 for (AuthUserResponse user : userResponsePage) {
                     TaskEmailDetails taskReport = taskReportGenerator.generateTaskReportForUser(user, DEFAULT_PAGE_SIZE);
-                    log.info("{}", taskReport);
-                    log.info("{}", mailQueueSender);
+
+                    if (taskReport.allTasks() <= 0) {
+                        log.info("User has not enough tasks for notification: {}", taskReport);
+                        continue;
+                    }
+
                     mailQueueSender.send(taskReport);
+                    log.info("Task report was sent: {}", taskReport);
                 }
 
             } catch (FeignException ex) {
