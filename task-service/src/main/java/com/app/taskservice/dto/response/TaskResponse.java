@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record TaskResponse (
         Long id,
+        Long userId,
         String title,
         String description,
         String status
