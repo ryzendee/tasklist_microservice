@@ -1,6 +1,6 @@
 package com.app.taskservice.utils.sender;
 
-import com.app.mail.TaskEmailDetails;
+import com.app.rabbit.mail.TaskEmailDetails;
 
 public interface MailQueueSender {
 

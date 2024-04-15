@@ -1,7 +1,7 @@
 package com.app.taskservice.scheduler;
 
 import com.app.rabbit.mail.TaskEmailDetails;
-import com.app.taskservice.dto.response.UserResponse;
+import com.app.taskservice.dto.response.AuthUserResponse;
 import com.app.taskservice.service.AuthUserService;
 import com.app.taskservice.utils.generator.TaskReportGenerator;
 import com.app.taskservice.utils.sender.MailQueueSender;
@@ -19,7 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 public class TaskReportScheduler {
 
-    private static final String SCHEDULE_TIME = "0 0 0 * * *";
+    private static final String SCHEDULE_TIME = "0 10 16 * * *";
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_OPERATION_ATTEMPTS = 3;
 
@@ -40,15 +40,17 @@ public class TaskReportScheduler {
         while (continueExecuting) {
 
             try {
-                Page<UserResponse> userResponsePage = authUserService.sendRequestToGetUsers(page, DEFAULT_PAGE_SIZE);
+                Page<AuthUserResponse> userResponsePage = authUserService.sendRequestToGetUsers(page, DEFAULT_PAGE_SIZE);
                 page++;
 
                 if (userResponsePage.isEmpty()) {
                     continueExecuting = false;
                 }
 
-                for (UserResponse user : userResponsePage) {
+                for (AuthUserResponse user : userResponsePage) {
                     TaskEmailDetails taskReport = taskReportGenerator.generateTaskReportForUser(user, DEFAULT_PAGE_SIZE);
+                    log.info("{}", taskReport);
+                    log.info("{}", mailQueueSender);
                     mailQueueSender.send(taskReport);
                 }
 

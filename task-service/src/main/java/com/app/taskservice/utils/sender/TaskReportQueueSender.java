@@ -1,6 +1,6 @@
 package com.app.taskservice.utils.sender;
 
-import com.app.mail.TaskEmailDetails;
+import com.app.rabbit.mail.TaskEmailDetails;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,7 +16,7 @@ public class TaskReportQueueSender implements MailQueueSender {
 
     public TaskReportQueueSender(@NotNull RabbitTemplate rabbitTemplate,
                                  @Value("${email-exchange.name}") @NotBlank String exchange,
-                                 @Value("${email-exchange.queues.registration.routing}")  @NotBlank String routingKey) {
+                                 @Value("${email-exchange.queues.task-report.routing}")  @NotBlank String routingKey) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchange = exchange;
         this.routingKey = routingKey;

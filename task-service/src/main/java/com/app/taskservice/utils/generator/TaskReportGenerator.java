@@ -1,9 +1,9 @@
 package com.app.taskservice.utils.generator;
 
-import com.app.mail.TaskEmailDetails;
-import com.app.taskservice.dto.response.UserResponse;
+import com.app.rabbit.mail.TaskEmailDetails;
+import com.app.taskservice.dto.response.AuthUserResponse;
 
 public interface TaskReportGenerator {
 
-    TaskEmailDetails generateTaskReportForUser(UserResponse user, int pageSize);
+    TaskEmailDetails generateTaskReportForUser(AuthUserResponse user, int pageSize);
 }
