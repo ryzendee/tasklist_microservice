@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,8 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = true)
     @Override
     public Page<TaskEntity> getTasksPageByUserId(Long userId, int page, int pageSize) {
-        return taskRepository.findAllByUserId(userId, page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return taskRepository.findAllByUserId(userId, pageable);
     }
 
     @Transactional
